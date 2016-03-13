@@ -7,7 +7,7 @@ key (Node _ k _ _ ) = k
 
 
 priority :: Tree a -> Int
-priority (Node p _ _ _) = p
+priority (Node p _  _ _) = p
 
 
 left :: Tree a -> Tree a
@@ -27,26 +27,27 @@ find (Node p key left right) element
 
 
 rotateLeft :: Tree a -> Tree a
-rotateLeft node = Node sonP sonKey sonLeft parent
+rotateLeft parent = Node sonP sonKey sonLeft newParent
     where
-        son = (left parent)
+        son = left parent
         sonP = priority son
         sonKey = key son
-        sonLeft = (left son)
-        parent = Node (priority node) (key node) (right son) (right node)
+        sonLeft = left son
+        newParent = Node (priority parent) (key parent) (right son) (right parent)
 
 
 rotateRight :: Tree a -> Tree a
-rotateRight node = Node sonP sonKey parent sonRight
+rotateRight parent = Node sonP sonKey newParent sonRight
     where
-        son = (left parent)
+        son = (right parent)
         sonP = priority son
         sonKey = key son
         sonRight = (right son)
-        parent = Node (priority node) (key node) (left node) sonRight
+        newParent = Node (priority parent) (key parent) (left parent) sonRight
 
 
 insert :: (Ord a, Eq a) => Tree a -> a -> Int -> Tree a
+insert Empty value p = Node p value Empty Empty 
 insert root value p
     | value < (key root) =
         if p < (priority root)
@@ -54,7 +55,7 @@ insert root value p
             rotateLeft insertLeft
          else
             insertLeft
-    | value > (key root) = 
+    | value > (key root) =
         if p < (priority root)
          then
             rotateLeft insertRight

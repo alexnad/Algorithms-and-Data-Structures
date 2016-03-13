@@ -1,5 +1,5 @@
 
-data Tree a = Empty | Node Int a (Tree a) (Tree a) deriving (Show)
+data Tree a = Empty | Node Int a (Tree a) (Tree a) deriving (Show, Eq)
 
 
 key :: Tree a -> a
@@ -49,6 +49,7 @@ rotateRight parent = Node sonP sonKey newParent sonRight
 insert :: (Ord a, Eq a) => Tree a -> a -> Int -> Tree a
 insert Empty value p = Node p value Empty Empty 
 insert root value p
+    | value == (key root) = root
     | value < (key root) =
         if p < (priority root)
          then
@@ -64,3 +65,23 @@ insert root value p
     where
         insertLeft = Node (priority root) (key root) (insert (left root) value p) (right root)
         insertRight = Node (priority root) (key root) (left root) (insert (right root) value p)
+
+
+delete :: (Ord a, Eq a) => Tree a -> a -> Tree a
+delete (Node p value Empty Empty) element =
+    if(value == element) 
+        then Empty 
+        else Node p value Empty Empty
+delete root element
+    | element == (key root) =
+        if leftSon == Empty || (rightSon /= Empty && priority leftSon > priority rightSon)
+            then Node (priority rightSon) (key rightSon) leftSon rightDeletion
+            else Node (priority leftSon) (key leftSon) leftDeletion rightSon
+    | element < (key root) = delete (left root) element
+    | element > (key root) = delete (right root) element
+    where
+        leftSon = (left root)
+        rightSon = (right root)
+        rightDeletion = delete (rotateRight root) element
+        leftDeletion = delete (rotateLeft root) element
+

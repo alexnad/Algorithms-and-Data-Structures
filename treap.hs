@@ -59,7 +59,7 @@ insert root value p
     | value > (key root) =
         if p < (priority root)
          then
-            rotateLeft insertRight
+            rotateRight insertRight
          else
             insertRight
     where
@@ -82,6 +82,6 @@ delete root element
     where
         leftSon = (left root)
         rightSon = (right root)
-        rightDeletion = delete (rotateRight root) element
-        leftDeletion = delete (rotateLeft root) element
+        rightDeletion = delete (Node (priority root) (key root) (left rightSon) (right rightSon)) element
+        leftDeletion = delete (Node (priority root) (key root) (left leftSon) (right leftSon)) element
 

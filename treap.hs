@@ -87,11 +87,12 @@ delete root element
         rightDeletion = delete (Node (priority root) (key root) (left rightSon) (right rightSon)) element
         leftDeletion = delete (Node (priority root) (key root) (left leftSon) (right leftSon)) element
 
-
+ 
 split :: (Ord a, Eq a) => Tree a -> a -> (Tree a, Tree a)
 split node value = (left t, right t)
     where
-        t = (insert node value -1)
+        t = insert node value (-1)
+
 
 data UniqueKeyGenerator = UniqueKeyGenerator { generator :: [Int],
                                                used :: Set.Set Int}

@@ -1,6 +1,7 @@
 import qualified Data.Set as Set
 import qualified System.Random as R
 
+
 data Tree a = Empty | Node Int a (Tree a) (Tree a) deriving (Show, Eq)
 
 
@@ -121,8 +122,28 @@ headGen g =
 data Treap a = Treap {treap :: (Tree a), uniqueKeys :: UniqueKeyGenerator}
 
 
+instance Show a => Show (Treap a) where
+    show t = show (treap t)
+
+
+createEmpty :: Int -> Treap a
+createEmpty seed = Treap Empty (createGen seed)
+
+
 tinsert :: (Ord a, Eq a) => Treap a -> a -> Treap a
 tinsert t element = Treap (insert (treap t) element (next)) (gen)
     where
         (next, gen) = headGen (uniqueKeys t)
 
+
+tfind :: (Ord a, Eq a) => Treap a -> a -> Bool
+tfind t element = find (treap t) element
+
+
+tdelete :: (Ord a, Eq a) => Treap a -> a -> Treap a
+tdelete t element = Treap (delete (treap t) element) (uniqueKeys t)
+
+
+tinsertList :: (Ord a, Eq a) => Treap a -> [a] -> Treap a
+tinsertList t [] = t
+tinsertList t list = tinsertList (tinsert t (head list)) (tail list)

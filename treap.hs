@@ -108,7 +108,14 @@ tailGen g = UniqueKeyGenerator (tail (generator g)) (used g)
 
 
 headGen :: UniqueKeyGenerator -> (Int, UniqueKeyGenerator)
-headGen g = (head (generator g), UniqueKeyGenerator (tail (generator g)) (used g))
+headGen g = 
+    if Set.member nextRand (used g)
+        then
+         (headGen (UniqueKeyGenerator (tail (generator g)) (used g)))
+        else
+         (nextRand, UniqueKeyGenerator (tail (generator g)) (Set.insert nextRand (used g)))
+    where
+        nextRand = head (generator g)
 
 
 data Treap a = Treap {treap :: (Tree a), uniqueKeys :: UniqueKeyGenerator}

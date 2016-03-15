@@ -1,3 +1,5 @@
+import qualified Data.Set as Set
+import qualified System.Random as R
 
 data Tree a = Empty | Node Int a (Tree a) (Tree a) deriving (Show, Eq)
 
@@ -89,6 +91,30 @@ delete root element
 split :: (Ord a, Eq a) => Tree a -> a -> (Tree a, Tree a)
 split node value = (left t, right t)
     where
-        t = insert node value -1
+        t = (insert node value -1)
 
+data UniqueKeyGenerator = UniqueKeyGenerator { generator :: [Int],
+                                               used :: Set.Set Int}
+
+
+
+createGen :: Int -> UniqueKeyGenerator
+createGen seed = UniqueKeyGenerator (R.randomRs (0,1000000000) (R.mkStdGen seed)) Set.empty
+
+
+tailGen :: UniqueKeyGenerator -> UniqueKeyGenerator
+tailGen g = UniqueKeyGenerator (tail (generator g)) (used g) 
+
+
+headGen :: UniqueKeyGenerator -> (Int, UniqueKeyGenerator)
+headGen g = (head (generator g), UniqueKeyGenerator (tail (generator g)) (used g))
+
+
+data Treap a = Treap {treap :: (Tree a), uniqueKeys :: UniqueKeyGenerator}
+
+
+tinsert :: (Ord a, Eq a) => Treap a -> a -> Treap a
+tinsert t element = Treap (insert (treap t) element (next)) (gen)
+    where
+        (next, gen) = headGen (uniqueKeys t)
 

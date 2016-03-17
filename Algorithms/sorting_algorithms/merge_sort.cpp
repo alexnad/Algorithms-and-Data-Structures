@@ -16,23 +16,23 @@ void merge_sort(int left, int right, int* array)
     {
         if(i > middle)
         {
-            temp.insert(array[j]);
+            temp.push_back(array[j]);
             j++;
             continue;
         }
-        if(j > middle)
+        if(j > right)
         {
-            temp.insert(array[i]);
+            temp.push_back(array[i]);
             i++;
             continue;
         }
         if(array[i] <= array[j])
         {
-            temp.insert(array[i]); i++;
+            temp.push_back(array[i]); i++;
         }
         else
         {
-            temp.insert(array[j]); j++;
+            temp.push_back(array[j]); j++;
         }
 
     }
@@ -54,7 +54,7 @@ int main()
     merge_sort(0, n-1, array);
     for(int i=0; i<n; i++)
     {
-        std::cout << array[i] << " " << std::endl;
+        std::cout << array[i] << " ";
     }
     delete array;
 
